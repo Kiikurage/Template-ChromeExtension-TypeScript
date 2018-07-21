@@ -1,45 +1,73 @@
 'use strict';
 
-const webpack = require('webpack');
-const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const LiveReloadPlugin = require('webpack-livereload-plugin');
 
-const SRC_DIR = path.resolve(__dirname, './src');
-const BUILD_DIR = path.resolve(__dirname, './build');
-const NODE_MODULES = path.resolve(__dirname, './node_modules');
 
 module.exports = {
 	cache: true,
 	entry: {
-		content_script: `${SRC_DIR}/content_script.ts`,
-		background: `${SRC_DIR}/background.ts`,
+		'contentScript': `./src/contentScript.ts`,
+		'background': `./src/background.ts`,
+		'popup': `./src/popup.tsx`,
+		'options': `./src/options.tsx`,
 	},
 	output: {
-		path: BUILD_DIR,
+		path: './build',
 		filename: '[name].js'
 	},
 	resolve: {
-		extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', '.scss'],
+		extensions: ['.ts', '.tsx', '.js', '.jsx'],
 		modules: [
-			NODE_MODULES,
-			SRC_DIR
+			'./node_modules',
+			'./src'
 		]
 	},
-	plugins: [],
+	devtool: process.env.NODE_ENV === 'production' ? '' : 'sourcemap',
 	module: {
-		loaders: [{
-			test: /\.js(x?)$/,
-			loaders: 'babel-loader',
-			exclude: /node_modules/
-		}, {
-			test: /\.ts(x?)$/,
-			loaders: 'babel-loader!ts-loader',
+		rules: [{
+			test: /\.tsx?$/,
+			use: [{
+				loader: 'awesome-typescript-loader'
+			}],
 			exclude: /node_modules/
 		}, {
 			test: /\.scss$/,
-			loaders: 'style-loader!css-loader!sass-loader'
+			use: [{
+				loader: MiniCssExtractPlugin.loader
+			}, {
+				loader: 'typings-for-css-modules-loader',
+				options: {
+					modules: true,
+					camelCase: true,
+					namedExport: true,
+					minimize: false,
+					localIdentName: '[local]-[hash:base64:5]'
+				}
+			}, {
+				loader: 'postcss-loader'
+			}]
 		}, {
-			test: /\.css$/,
-			loaders: 'style-loader!css-loader'
+			test: /\.(png|jpg|jpeg|gif|ico)$/,
+			use: [{
+				loader: 'file-loader',
+				options: {
+					name: '[name].[ext]'
+				}
+			}]
 		}]
-	}
+	},
+	mode: 'production',
+	plugins: [
+		new CopyWebpackPlugin([{
+			from: './src/static/**/*',
+			to: './',
+			flatten: true
+		}]),
+		new MiniCssExtractPlugin({
+			filename: "[name].css"
+		}),
+		new LiveReloadPlugin()
+	]
 };

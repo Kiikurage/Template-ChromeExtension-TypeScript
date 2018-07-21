@@ -9,20 +9,27 @@
 		"matches": [
 			"<all_urls>"
 		],
-		"css": [
-			"style.css"
-		],
 		"js": [
-			"content_script.js"
+			"contentScript.js"
 		]
 	}],
 	"web_accessible_resources": [
 		"*"
 	],
+	"options_page": "options.html",
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	},
 	"background": {
 		"scripts": [
 			"background.js"
 		]
 	},
-	"permissions": [ ]
+	"browser_action": {
+		"default_popup": "popup.html"
+	},
+	"permissions": [
+		"storage"
+	]
 }

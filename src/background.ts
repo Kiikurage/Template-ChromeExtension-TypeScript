@@ -1,1 +1,1 @@
-import './libs/chrome_reload'
+import './lib/liveReloade';

@@ -1,9 +1,6 @@
-*.log
-*.lock
-.idea
 .DS_Store
+thumbs.db
+*.log
+.idea
 node_modules
-typings
 build
-tmp
-!yarn.lock
