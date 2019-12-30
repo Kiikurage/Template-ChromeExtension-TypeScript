@@ -1,1 +1,1 @@
-import './lib/liveReloade';
+import './lib/liveReload';
