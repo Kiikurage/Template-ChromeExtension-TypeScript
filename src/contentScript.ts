@@ -1,1 +1,1 @@
-console.log("[Template-ChromeExtension-TypeScript] contentScript");
+console.log('[Template-ChromeExtension-TypeScript] contentScript');
